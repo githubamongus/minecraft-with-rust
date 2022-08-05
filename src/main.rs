@@ -8,6 +8,7 @@ use drawable::Drawable;
 use gl::*;
 use glfw::{FAIL_ON_ERRORS, Context, Action, Window};
 use glm::*;
+use minecraft::Chunk;
 
 const WINDOW_WIDTH: i32 = 1920;
 const WINDOW_HEIGHT: i32 = 1080;
@@ -82,6 +83,9 @@ fn main() {
             uv: [1.0, 0.0]
         }
     ], &Vec::from(indices), "textures/monke.png");
+    
+    let chunk = Chunk::new();
+    chunk.draw();
 
     let mut position = [0.0, 0.0, 2.0];
     let mut direction = [0.0, 0.0, -1.0];
