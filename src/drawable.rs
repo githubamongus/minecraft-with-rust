@@ -2,18 +2,17 @@ use std::{mem::size_of_val, mem::size_of, ffi::CString};
 
 use crate::{Vertex, gl::{create_vao, bind_vao, create_vbo, bind_vbo, vbo_data, create_ebo, bind_ebo, ebo_data, link_attrib, create_texture, create_shader, use_shader, bind_texture, set_texture_uniform, draw}};
 
+#[derive(Debug, Clone)]
 pub struct Drawable {
-    vertices: Vec<Vertex>,
-    indices: Vec<u32>,
+    vertices_count: u32,
     program: u32,
     texture: u32,
     vao: u32,
     vbo: u32,
-    ebo: u32
 }
 
 impl Drawable {
-    pub fn new(vertices: &Vec<Vertex>, indices: &Vec<u32>, image_path: &str) -> Self {
+    pub fn new(vertices: &Vec<Vertex>, image_path: &str) -> Self {
         let program = create_shader();
         use_shader(program);
         
@@ -23,10 +22,6 @@ impl Drawable {
         let vbo: u32 = create_vbo();
         bind_vbo(vbo);
         vbo_data(size_of_val(vertices.as_slice()) as i32, vertices.as_ptr().cast());
-
-        let ebo: u32 = create_ebo();
-        bind_ebo(ebo);
-        ebo_data(size_of_val(indices.as_slice()) as i32, indices.as_ptr().cast());
 
         //aPos
         link_attrib(0, 3, size_of::<Vertex>() as i32, 0);
@@ -44,17 +39,26 @@ impl Drawable {
         set_texture_uniform(program);
         
         Drawable {
-            vertices: vertices.clone(),
-            indices: indices.clone(),
+            vertices_count: vertices.len() as u32,
             program,
             texture,
             vao,
-            vbo,
-            ebo
+            vbo
         }
     }
 
+    pub fn change_vertices(&mut self, vertices: &Vec<Vertex>) {
+        self.vertices_count = vertices.len() as u32;
+
+        bind_vao(self.vao);
+        bind_vbo(self.vbo);
+        vbo_data(size_of_val(vertices.as_slice()) as i32, vertices.as_ptr().cast());
+
+        bind_vao(self.vao);
+        bind_vbo(self.vbo);
+    }
+
     pub fn draw(&self) {
-        draw(self.program, self.texture, self.vao, self.indices.len() as u32);
+        draw(self.program, self.texture, self.vao, self.vertices_count);
     }
 }

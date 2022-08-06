@@ -10,7 +10,7 @@ uniform sampler2D tex;
 vec3 lightPos = vec3(0.0, 1000.0, 0.0);
 
 void main() {
-    float ambientStrength = 0.3f;
+    float ambientStrength = 0.9f;
     vec3 ambient = ambientStrength * vec3(1.0, 1.0, 1.0);
 
     vec3 norm = normalize(Normal);
@@ -18,5 +18,11 @@ void main() {
 
     float diff = max(dot(norm, lightDir), 0.0);
 
-    OutColor = vec4(ambient + diff, 1.0) * texture(tex, UV);
+    vec4 diffuse = vec4(ambient + diff, 1.0) * texture(tex, UV);
+
+    if (diffuse.a <= 0.1) {
+        discard;
+    }
+
+    OutColor = diffuse;
 }
