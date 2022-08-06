@@ -39,7 +39,17 @@ fn main() {
     create_projection();
     create_view_matrix(&position, &direction);
     
+    let mut prev_time = std::time::Instant::now();
+    let mut count = 0;
     while !window.should_close() {
+        let crnt_time = std::time::Instant::now();
+        count += 1;
+        if crnt_time - prev_time >= std::time::Duration::from_secs(1) {
+            println!("{}", count);
+            count = 0;
+            prev_time = crnt_time;
+        }
+
         glfw.poll_events();
         clear_screen();
         
@@ -47,7 +57,8 @@ fn main() {
             window.set_should_close(true);
         }
         
-        println!("{:?}", position);
+        //println!("pos {:?}", position);
+        //println!("dir {:?}", direction);
         chunk.draw();
         inputs(&mut position, &mut direction, &mut window);
         window.swap_buffers();
