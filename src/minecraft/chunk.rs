@@ -60,15 +60,31 @@ impl Chunk {
                                         uv: block.top_uv
                                     },
                                     Vertex {
+                                        position: [crnt_position.0, y as f32, crnt_position.1 + 1.0],
+                                        normal: [0.0, 1.0, 0.0],
+                                        uv: [block.top_uv[0], block.top_uv[1] + 0.1]
+                                    },
+                                    Vertex {
+                                        position: [crnt_position.0 + 1.0, y as f32, crnt_position.1 + 1.0],
+                                        normal: [0.0, 1.0, 0.0],
+                                        uv: [block.top_uv[0] + 0.1, block.top_uv[1] + 0.1]
+                                    },
+
+                                    Vertex {
+                                        position: [crnt_position.0, y as f32, crnt_position.1],
+                                        normal: [0.0, 1.0, 0.0],
+                                        uv: block.top_uv
+                                    },
+                                    Vertex {
                                         position: [crnt_position.0 + 1.0, y as f32, crnt_position.1 + 1.0],
                                         normal: [0.0, 1.0, 0.0],
                                         uv: [block.top_uv[0] + 0.1, block.top_uv[1] + 0.1]
                                     },
                                     Vertex {
-                                        position: [crnt_position.0, y as f32, crnt_position.1 + 1.0],
+                                        position: [crnt_position.0 + 1.0, y as f32, crnt_position.1],
                                         normal: [0.0, 1.0, 0.0],
-                                        uv: [block.top_uv[0], block.top_uv[1] + 1.0]
-                                    } //TODO: finish square
+                                        uv: [block.top_uv[0] + 0.1, block.top_uv[1]]
+                                    }
                                 ]);
                             }
 
