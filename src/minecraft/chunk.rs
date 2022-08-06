@@ -19,7 +19,7 @@ impl Chunk {
             for y in 0..256 {
                 for z in 0..20 {
                     if y <= 9 {
-                        blocks[x][y][z] = Block::new(super::block::BlockType::GrassDirt, [0.0, 0.0]).with_side_uv([0.1, 0.0]).with_bottom_uv([0.2, 0.0]);
+                        blocks[x][y][z] = Block::new(super::block::BlockType::Solid, [0.0, 0.0]).with_side_uv([0.1, 0.0]).with_bottom_uv([0.2, 0.0]);
                     }
                 }
             }
@@ -34,7 +34,7 @@ impl Chunk {
     }
 
     pub fn check_faces(&mut self) {
-        self.blocks[4][12][6] = Block::new(super::block::BlockType::GrassDirt, [0.0, 0.0]).with_side_uv([0.1, 0.0]).with_bottom_uv([0.2, 0.0]);
+        self.blocks[4][12][6] = Block::new(super::block::BlockType::Solid, [0.0, 0.0]).with_side_uv([0.1, 0.0]).with_bottom_uv([0.2, 0.0]);
         for x in 0..20 {
             for y in 0..256 {
                 for z in 0..20 {
