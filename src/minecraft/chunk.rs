@@ -29,7 +29,7 @@ impl Chunk {
             position: (0, 0),
             blocks: blocks,
             vertices: Vec::new(),
-            drawable: Drawable::new(&Vec::new(), "textures/atlas.png")
+            drawable: Drawable::new(&Vec::new(), "textures/atlas.png", true)
         }
     }
 

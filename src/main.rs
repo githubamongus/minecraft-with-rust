@@ -38,6 +38,27 @@ fn main() {
     let mut direction = [0.0, 0.0, -1.0];
     create_projection();
     create_view_matrix(&position, &direction);
+
+    let test = Drawable::new(&vec![
+            Vertex {
+                position: [-0.2, -0.2, 0.0],
+                normal: [0.0, 0.0, 0.0],
+                uv: [0.0, 0.0]
+            },
+            Vertex {
+                position: [0.2, -0.2, 0.0],
+                normal: [0.0, 0.0, 0.0],
+                uv: [1.0, 0.0]
+            },
+            Vertex {
+                position: [0.0, 0.2, 0.0],
+                normal: [0.0, 0.0, 0.0],
+                uv: [0.5, 1.0]
+            }
+        ],
+        "textures/speed retarded.png",
+        false
+    );
     
     let mut prev_time = std::time::Instant::now();
     let mut count = 0;
@@ -45,7 +66,7 @@ fn main() {
         let crnt_time = std::time::Instant::now();
         count += 1;
         if crnt_time - prev_time >= std::time::Duration::from_secs(1) {
-            println!("{}", count);
+            println!("{} - fps", count);
             count = 0;
             prev_time = crnt_time;
         }
@@ -60,6 +81,7 @@ fn main() {
         //println!("pos {:?}", position);
         //println!("dir {:?}", direction);
         chunk.draw();
+        test.draw();
         inputs(&mut position, &mut direction, &mut window);
         window.swap_buffers();
     }

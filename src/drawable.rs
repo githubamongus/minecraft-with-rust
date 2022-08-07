@@ -1,9 +1,10 @@
 use std::{mem::size_of_val, mem::size_of, ffi::CString};
 
-use crate::{Vertex, gl::{create_vao, bind_vao, create_vbo, bind_vbo, vbo_data, create_ebo, bind_ebo, ebo_data, link_attrib, create_texture, create_shader, use_shader, bind_texture, set_texture_uniform, draw}};
+use crate::{Vertex, gl::{create_vao, bind_vao, create_vbo, bind_vbo, vbo_data, create_ebo, bind_ebo, ebo_data, link_attrib, create_texture, create_shader, use_shader, bind_texture, set_texture_uniform, draw, create_2d_shader}};
 
 #[derive(Debug, Clone)]
 pub struct Drawable {
+    is3d: bool,
     vertices_count: u32,
     program: u32,
     texture: u32,
@@ -12,8 +13,14 @@ pub struct Drawable {
 }
 
 impl Drawable {
-    pub fn new(vertices: &Vec<Vertex>, image_path: &str) -> Self {
-        let program = create_shader();
+    pub fn new(vertices: &Vec<Vertex>, image_path: &str, is3d: bool) -> Self {
+        let program = {
+            if is3d {
+                create_shader()
+            } else {
+                create_2d_shader()
+            }
+        };
         use_shader(program);
         
         let vao: u32 = create_vao();
@@ -23,13 +30,20 @@ impl Drawable {
         bind_vbo(vbo);
         vbo_data(size_of_val(vertices.as_slice()) as i32, vertices.as_ptr().cast());
 
-        //aPos
-        link_attrib(0, 3, size_of::<Vertex>() as i32, 0);
-        //aNormal
-        link_attrib(1, 3, size_of::<Vertex>() as i32, (size_of::<f32>() * 3) as u32);
-        //aUV
-        link_attrib(2, 2, size_of::<Vertex>() as i32, (size_of::<f32>() * 6) as u32);
-
+        if is3d {
+            //aPos
+            link_attrib(0, 3, size_of::<Vertex>() as i32, 0);
+            //aNormal
+            link_attrib(1, 3, size_of::<Vertex>() as i32, (size_of::<f32>() * 3) as u32);
+            //aUV
+            link_attrib(2, 2, size_of::<Vertex>() as i32, (size_of::<f32>() * 6) as u32);
+        } else {
+            //aPos
+            link_attrib(0, 3, size_of::<Vertex>() as i32, 0);
+            //aUV
+            link_attrib(1, 2, size_of::<Vertex>() as i32, (size_of::<f32>() * 6) as u32);
+        }
+        
         bind_vao(0);
         bind_vbo(0);
         bind_ebo(0);
@@ -39,6 +53,7 @@ impl Drawable {
         set_texture_uniform(program);
         
         Drawable {
+            is3d,
             vertices_count: vertices.len() as u32,
             program,
             texture,
@@ -59,6 +74,6 @@ impl Drawable {
     }
 
     pub fn draw(&self) {
-        draw(self.program, self.texture, self.vao, self.vertices_count);
+        draw(self.program, self.texture, self.vao, self.vertices_count, self.is3d);
     }
 }

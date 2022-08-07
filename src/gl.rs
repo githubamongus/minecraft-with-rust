@@ -26,6 +26,7 @@ pub fn load_renderer() {
         rdraw = Some(lib.as_ref().unwrap().get(b"draw").unwrap());
         rcreate_projection = Some(lib.as_ref().unwrap().get(b"create_projection").unwrap());
         rcreate_view_matrix = Some(lib.as_ref().unwrap().get(b"create_view_matrix").unwrap());
+        rcreate_2d_shader = Some(lib.as_ref().unwrap().get(b"create_2d_shader").unwrap());
     }
 }
 
@@ -47,9 +48,10 @@ pub static mut rebo_data: Option<Symbol<fn(size: i32, data: *const c_void)>> = N
 pub static mut rcreate_texture: Option<Symbol<fn(image_path: *const c_char) -> u32>> = None;
 pub static mut rbind_texture: Option<Symbol<fn(texture: u32) -> ()>> = None;
 pub static mut rset_texture_uniform: Option<Symbol<fn(shader: u32) -> ()>> = None;
-pub static mut rdraw: Option<Symbol<fn(shader: u32, texture: u32, vao: u32, vertices_count: u32) -> ()>> = None;
+pub static mut rdraw: Option<Symbol<fn(shader: u32, texture: u32, vao: u32, vertices_count: u32, bool) -> ()>> = None;
 pub static mut rcreate_projection: Option<Symbol<fn() -> ()>> = None;
 pub static mut rcreate_view_matrix: Option<Symbol<fn(position: [f32; 3], direction: [f32; 3]) -> ()>> = None;
+pub static mut rcreate_2d_shader: Option<Symbol<fn() -> u32>> = None;
 
 pub fn load_gl() {
     unsafe {
@@ -159,8 +161,14 @@ pub fn create_view_matrix(position: &[f32; 3], direction: &[f32; 3]) {
     }
 }
 
-pub fn draw(shader: u32, texture: u32, vao: u32, vertices_count: u32) {
+pub fn draw(shader: u32, texture: u32, vao: u32, vertices_count: u32, is3d: bool) {
     unsafe {
-        rdraw.as_ref().unwrap()(shader, texture, vao, vertices_count);
+        rdraw.as_ref().unwrap()(shader, texture, vao, vertices_count, is3d);
+    }
+}
+
+pub fn create_2d_shader() -> u32 {
+    unsafe {
+        rcreate_2d_shader.as_ref().unwrap()()
     }
 }

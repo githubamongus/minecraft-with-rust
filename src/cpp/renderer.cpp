@@ -86,6 +86,46 @@ extern "C" {
         return program;
     }
 
+    unsigned int create_2d_shader() {
+        std::string vertex_source_str, fragment_source_str;
+        std::stringstream vertex_stream, fragment_stream;
+
+        std::ifstream vertex_file("shaders/2d.vert");
+        vertex_stream << vertex_file.rdbuf();
+        vertex_file.close();
+        
+        std::ifstream fragment_file("shaders/2d.frag");
+        fragment_stream << fragment_file.rdbuf();
+        fragment_file.close();
+
+        vertex_source_str = vertex_stream.str();
+        fragment_source_str = fragment_stream.str();
+
+        const char* vertex_source = vertex_source_str.c_str();
+        const char* fragment_source = fragment_source_str.c_str();
+
+        unsigned int vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vertex_shader, 1, &vertex_source, nullptr);
+        glCompileShader(vertex_shader);
+        check_shader(vertex_shader, "VERTEX");
+
+        unsigned int fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fragment_shader, 1, &fragment_source, nullptr);
+        glCompileShader(fragment_shader);
+        check_shader(fragment_shader, "FRAGMENT");
+
+        unsigned int program = glCreateProgram();
+        glAttachShader(program, vertex_shader);
+        glAttachShader(program, fragment_shader);
+        glLinkProgram(program);
+        check_shader(program, "PROGRAM");
+
+        glDeleteShader(vertex_shader);
+        glDeleteShader(fragment_shader);
+
+        return program;
+    }
+
     void use_shader(unsigned int shader) {
         glUseProgram(shader);
     }
@@ -183,11 +223,13 @@ extern "C" {
         view = glm::lookAt(position_vec, position_vec + direction_vec, glm::vec3(0.0, 1.0, 0.0));
     }
 
-    void draw(unsigned int shader, unsigned int texture, unsigned int vao, unsigned int vertices_count) {        
+    void draw(unsigned int shader, unsigned int texture, unsigned int vao, unsigned int vertices_count, bool is3d) {        
         glUseProgram(shader);
 
-        glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(glGetUniformLocation(shader, "proj"), 1, GL_FALSE, glm::value_ptr(proj));
+        if (is3d) {
+            glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
+            glUniformMatrix4fv(glGetUniformLocation(shader, "proj"), 1, GL_FALSE, glm::value_ptr(proj));
+        }
 
         glBindTexture(GL_TEXTURE_2D, texture);
         glBindVertexArray(vao);

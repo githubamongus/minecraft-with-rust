@@ -1,0 +1,13 @@
+todo {
+    infinite chunks
+    raycasting
+    perlin noise
+    fix bug that makes the screen "shake" if you look to far up or down 
+}
+
+in progress {
+}
+
+done {
+    2D sprite rendering
+}
