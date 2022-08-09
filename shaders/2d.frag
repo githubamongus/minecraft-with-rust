@@ -6,5 +6,11 @@ out vec4 OutColor;
 uniform sampler2D tex;
 
 void main() {
-    OutColor = texture(tex, UV);
+    vec4 diffuse = texture(tex, UV);
+
+    if (diffuse.a <= 0.1) {
+        discard;
+    }
+
+    OutColor = diffuse;
 }

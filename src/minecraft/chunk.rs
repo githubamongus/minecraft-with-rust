@@ -13,13 +13,13 @@ pub struct Chunk {
 const DRAW_CHUNK_SIDES: bool = false;
 impl Chunk {
     pub fn new() -> Chunk {
-        let mut blocks = vec![vec![vec![Block::new(super::block::BlockType::Air, [0.9, 0.9]); 20]; 256]; 20];
+        let mut blocks = vec![vec![vec![Block::new(String::from("air"), super::block::BlockType::Air, [0.9, 0.9]); 20]; 256]; 20];
 
         for x in 0..20 {
             for y in 0..256 {
                 for z in 0..20 {
                     if y <= 9 {
-                        blocks[x][y][z] = Block::new(super::block::BlockType::Solid, [0.0, 0.0]).with_side_uv([0.1, 0.0]).with_bottom_uv([0.2, 0.0]);
+                        blocks[x][y][z] = Block::new(String::from("grass_block"), super::block::BlockType::Solid, [0.0, 0.0]).with_side_uv([0.1, 0.0]).with_bottom_uv([0.2, 0.0]);
                     }
                 }
             }
@@ -34,7 +34,8 @@ impl Chunk {
     }
 
     pub fn check_faces(&mut self) {
-        self.blocks[4][12][6] = Block::new(super::block::BlockType::Solid, [0.0, 0.0]).with_side_uv([0.1, 0.0]).with_bottom_uv([0.2, 0.0]);
+        self.blocks[4][12][6] = Block::new(String::from("grass_block"), super::block::BlockType::Solid, [0.0, 0.0]).with_side_uv([0.1, 0.0]).with_bottom_uv([0.2, 0.0]);
+        self.vertices.clear();
         for x in 0..20 {
             for y in 0..256 {
                 for z in 0..20 {
@@ -577,5 +578,9 @@ impl Chunk {
     pub fn draw(&mut self) {
         self.drawable.change_vertices(&self.vertices);
         self.drawable.draw();
+    }
+
+    pub fn get_block_list_mut(&mut self) -> &mut Vec<Vec<Vec<Block>>> {
+        &mut self.blocks
     }
 }

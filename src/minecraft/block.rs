@@ -16,9 +16,12 @@ pub struct Block {
 }
 
 impl Block {
-    pub fn new(block_type: BlockType, uv: [f32; 2]) -> Self {
+    pub fn new(mut name: String, block_type: BlockType, uv: [f32; 2]) -> Self {
+        while name.len() < 32 {
+            name.push('0');
+        }
         Block {
-            name: *b"goofy000000000000000000000000000",
+            name: name.as_bytes().try_into().unwrap(),
             block_type,
             top_uv: uv,
             side_uv: uv,

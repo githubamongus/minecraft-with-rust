@@ -1,11 +1,16 @@
 todo {
     infinite chunks
-    raycasting
     perlin noise
-    fix bug that makes the screen "shake" if you look to far up or down 
+    fix bug that makes the screen "shake" if you look to far up or down
+    JSON blocks
+    saving chunks on disk
 }
 
 in progress {
+}
+
+semi done {
+    raycasting
 }
 
 done {

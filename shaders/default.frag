@@ -10,7 +10,7 @@ uniform sampler2D tex;
 vec3 lightPos = vec3(0.0, 1000.0, 0.0);
 
 void main() {
-    float ambientStrength = 0.7f;
+    float ambientStrength = 0.4f;
     vec3 ambient = ambientStrength * vec3(1.0, 1.0, 1.0);
 
     vec3 norm = normalize(Normal);
