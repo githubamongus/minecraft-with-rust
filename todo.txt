@@ -2,7 +2,6 @@ todo {
     infinite chunks
     perlin noise
     fix bug that makes the screen "shake" if you look to far up or down
-    JSON blocks
     saving chunks on disk
 }
 
@@ -14,5 +13,6 @@ semi done {
 }
 
 done {
+    JSON blocks
     2D sprite rendering
 }

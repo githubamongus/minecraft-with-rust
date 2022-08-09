@@ -5,6 +5,8 @@ mod drawable;
 mod minecraft;
 mod raycast;
 
+use std::{io::Write, collections::HashMap};
+
 use drawable::Drawable;
 use gl::*;
 use glfw::{FAIL_ON_ERRORS, Context, Action, Window};
@@ -33,9 +35,25 @@ fn main() {
     gl::load_renderer();
     load_gl();
     
-    let mut chunk = Chunk::new();
-    chunk.check_faces();
+    let mut list_of_blocks: HashMap<Box<str>, Block> = HashMap::new();
     
+    let blocks_dir = std::fs::read_dir("blocks/").unwrap();
+    for block in blocks_dir {
+        match block {
+            Ok(pog) => {
+                let out = std::fs::read(pog.path()).unwrap();
+                let des_block: Block = serde_json::from_slice(out.as_slice()).unwrap();
+                list_of_blocks.insert(des_block.clone().name.into_boxed_str(), des_block);
+            },
+            Err(not_pog) => {
+                println!("{}", not_pog);
+            }
+        }
+    }
+    
+    let mut chunk = Chunk::new(&list_of_blocks);
+    chunk.check_faces();
+
     let mut position = [0.0, 0.0, 2.0];
     let mut direction = [0.0, 0.0, -1.0];
     create_projection();

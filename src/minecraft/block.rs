@@ -1,14 +1,15 @@
 use crate::{Vertex, drawable::Drawable};
+use serde::{Serialize, Deserialize};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum BlockType {
     Air,
     Solid
 }
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Block {
-    pub name: [u8; 32],
+    pub name: String,
     pub block_type: BlockType,
     pub top_uv: [f32; 2],
     pub side_uv: [f32; 2],
@@ -16,12 +17,9 @@ pub struct Block {
 }
 
 impl Block {
-    pub fn new(mut name: String, block_type: BlockType, uv: [f32; 2]) -> Self {
-        while name.len() < 32 {
-            name.push('0');
-        }
+    pub fn new(name: String, block_type: BlockType, uv: [f32; 2]) -> Self {
         Block {
-            name: name.as_bytes().try_into().unwrap(),
+            name: name,
             block_type,
             top_uv: uv,
             side_uv: uv,
