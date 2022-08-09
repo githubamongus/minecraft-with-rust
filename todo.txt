@@ -1,11 +1,11 @@
 todo {
-    infinite chunks
     perlin noise
     fix bug that makes the screen "shake" if you look to far up or down
     saving chunks on disk
 }
 
 in progress {
+    infinite chunks
 }
 
 semi done {
