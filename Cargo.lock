@@ -87,7 +87,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "minecraft-2"
+name = "minecraft"
 version = "0.1.0"
 dependencies = [
  "glfw",
