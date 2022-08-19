@@ -1,11 +1,16 @@
 [package]
-name = "minecraft-2"
+name = "minecraft"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-glfw = { git = "https://github.com/bjz/glfw-rs.git", version = "0.45.0", default-features = false }
-glm = { version = "0.17.0", package = "nalgebra-glm" }
 libloading = "0.7.3"
+glm = {package = "nalgebra-glm", version = "0.17.0"}
+serde = {version = "1.0.143", features = ["derive"]}
+serde_json = "1.0.83"
+
+[dependencies.glfw]
+git = "https://github.com/bjz/glfw-rs.git"
+default-features = false

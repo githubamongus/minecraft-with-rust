@@ -5,12 +5,15 @@ layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aUV;
 
 out vec2 UV;
+out vec3 Normal;
+out vec3 FragPos;
 
 uniform mat4 view;
-uniform mat4 projection;
-uniform mat4 model;
+uniform mat4 proj;
 
 void main() {
     UV = aUV;
-    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    Normal = aNormal;
+    FragPos = aPos;
+    gl_Position = proj * view * vec4(aPos, 1.0);
 }
