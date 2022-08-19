@@ -3,6 +3,7 @@ use std::mem::{size_of, size_of_val};
 
 use glm::{Vec3, Vec2, Mat4};
 
+use crate::camera::Camera;
 use crate::gl::{create_shader, use_shader, create_vao, bind_vao, create_buffer, bind_buffer, link_attrib, buffer_data, draw_element, draw_array, create_texture, bind_texture, set_texture_uniform, set_matrix_uniform};
 use crate::{GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER};
 
@@ -90,12 +91,11 @@ impl Mesh {
         self.count = indices.len() as u32;
     }
 
-    pub fn draw(&self, projection: &Mat4, view: &Mat4) {
+    pub fn draw(&self, camera: &Camera) {
         use_shader(self.shader);
         bind_vao(self.vao);
         bind_texture(self.texture);
-        set_matrix_uniform(self.shader, CString::new("view").unwrap(), glm::value_ptr(&view).try_into().unwrap());
-        set_matrix_uniform(self.shader, CString::new("projection").unwrap(), glm::value_ptr(&projection).try_into().unwrap());
+        camera.set_uniforms(self.shader);
         set_matrix_uniform(self.shader, CString::new("model").unwrap(), glm::value_ptr(&self.model).try_into().unwrap());
         if self.has_indices {
             draw_element(self.count);

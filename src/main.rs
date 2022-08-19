@@ -1,5 +1,6 @@
 use std::ops::DerefMut;
 
+use camera::Camera;
 use gl::*;
 use glfw::{Context, Action, Window};
 use glm::{Vec3, vec3, vec2};
@@ -7,6 +8,7 @@ use mesh::{Mesh, Vertex};
 
 mod gl;
 mod mesh;
+mod camera;
 
 pub const WINDOW_WIDTH: u32 = 1920;
 pub const WINDOW_HEIGHT: u32 = 1080;
@@ -53,11 +55,7 @@ fn main() {
     test.set_vbo_data(&vertices);
     test.set_ebo_data(&[0, 2, 1, 0, 3, 2]);
 
-    let mut position = vec3(0.0, 0.0, 3.0);
-    let mut direction = vec3(0.0, 0.0, -1.0);
-
-    let proj = glm::perspective(WINDOW_WIDTH as f32 / WINDOW_HEIGHT as f32, 45.0f32.to_radians(), 0.1, 100.0);
-    
+    let mut camera = Camera::new(vec3(0.0, 0.0, 3.0));
     
     let mut delta_prev_time = std::time::Instant::now();
     //main loop
@@ -69,72 +67,15 @@ fn main() {
         glfw.poll_events();
         clear_screen();
 
-        let view = glm::look_at(&position, &(position + direction), &glm::vec3(0.0, 1.0, 0.0));
-        inputs(&mut position, &mut direction, &mut window, delta_time);
+        camera.inputs(&mut window, delta_time);
 
         //closes if escape is pressed
         if window.get_key(glfw::Key::Escape) == Action::Press {
             window.set_should_close(true);
         }
         
-        test.draw(&proj, &view);
+        test.draw(&camera);
 
         window.swap_buffers();
-    }
-}
-
-fn inputs(position: &mut Vec3, direction: &mut Vec3, window: &mut Window, delta_time: f32) {
-    let up = vec3(0.0, 1.0f32, 0.0);
-
-    let speed: f32 = 4.0;
-
-    use glfw::Key::*;
-    if window.is_focused() {
-        let up = vec3(0.0, 1.0, 0.0f32);
-        let speed: f32 = 4.0;
-        let sensitivity: f64 = 120.0;
-
-        use glfw::Action::*;
-        use glfw::Key::*;
-        if window.get_key(W) == Press {
-            *position += speed * delta_time * *direction;
-        }
-
-        if window.get_key(S) == Press {
-            *position -= speed * delta_time * *direction;
-        }
-
-        if window.get_key(A) == Press {
-            *position -= speed * delta_time * glm::normalize(&glm::cross(direction, &up));
-        }
-
-        if window.get_key(D) == Press {
-            *position += speed * delta_time * glm::normalize(&glm::cross(direction, &up));
-        }
-
-        if window.get_key(E) == Press {
-            *position += speed * delta_time * up;
-        }
-
-        if window.get_key(Q) == Press {
-            *position -= speed * delta_time * up;
-        }
-
-        window.set_cursor_mode(glfw::CursorMode::Hidden);
-
-        let mut mouseX = 0.0;
-        let mut mouseY = 0.0;
-        (mouseX, mouseY) = window.get_cursor_pos();
-
-        let rotX = sensitivity * ((mouseY - (WINDOW_HEIGHT / 2) as f64) / WINDOW_HEIGHT as f64);
-        let rotY = sensitivity * ((mouseX - (WINDOW_WIDTH / 2) as f64) / WINDOW_WIDTH as f64);
-        let newDirection = glm::rotate_vec3(&direction, (-rotX).to_radians() as f32, &glm::cross(&direction, &up));
-
-        if newDirection.y <= 0.975 && newDirection.y >= -0.975 {
-            *direction = newDirection;
-        }
-        *direction = glm::rotate_vec3(direction, (-rotY).to_radians() as f32, &up);
-
-        window.set_cursor_pos((WINDOW_WIDTH / 2) as f64, (WINDOW_HEIGHT / 2) as f64);
     }
 }
